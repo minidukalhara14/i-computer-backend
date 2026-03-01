@@ -5,6 +5,7 @@ import authentication from "./middleweres/authentication.js";
 import productRouter from "./routers/productRouter.js";
 
 
+
 const app = express();
   
 const mongodbURI= "mongodb+srv://admin:1234@cluster0.yfn2xjj.mongodb.net/icomputer?appName=Cluster0"
