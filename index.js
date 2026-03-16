@@ -3,12 +3,14 @@ import mongoose from "mongoose";
 import userRouter from "./routers/userRouter.js";
 import authentication from "./middleweres/authentication.js";
 import productRouter from "./routers/productRouter.js";
+import cors from "cors";
+import dotenv from "dotenv";
 
-
+dotenv.config()
 
 const app = express();
   
-const mongodbURI= "mongodb+srv://admin:1234@cluster0.yfn2xjj.mongodb.net/icomputer?appName=Cluster0"
+const mongodbURI = process.env.MONGO_URI;
 
 
 mongoose.connect(mongodbURI).then(
@@ -16,7 +18,7 @@ mongoose.connect(mongodbURI).then(
         console.log("Conected to MongoDB");
     }
 );
-
+app.use(cors());
 app.use(express.json()); //midle were pluged
 
 app.use(authentication)
