@@ -1,4 +1,3 @@
-import e from "express";
 import Product from "../models/product.js";
 import isAdmin from "./userController.js";
 

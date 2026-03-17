@@ -1,4 +1,7 @@
  import jwt from "jsonwebtoken";
+ import dotenv from "dotenv";
+
+dotenv.config();
  
  export default function authentication(req , res , next){
         
@@ -10,7 +13,7 @@
             const token = header.replace("Bearer " ,"")
             
 
-            jwt.verify(token , "I-computers" ,
+            jwt.verify(token , process.env.JWT_SECRET ,
                 (error , decoded)=>{
                    if(decoded == null){
                        res.json(

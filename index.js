@@ -23,8 +23,8 @@ app.use(express.json()); //midle were pluged
 
 app.use(authentication)
 
-app.use("/users" , userRouter)
-app.use("/products" ,productRouter )
+app.use("/api/users" , userRouter)
+app.use("/api/products" ,productRouter )
  
 
 
