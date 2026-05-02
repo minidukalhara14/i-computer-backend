@@ -5,6 +5,8 @@ import authentication from "./middleweres/authentication.js";
 import productRouter from "./routers/productRouter.js";
 import cors from "cors";
 import dotenv from "dotenv";
+import orderRouter from "./routers/OrderRouter.js";
+
 
 dotenv.config()
 
@@ -25,6 +27,7 @@ app.use(authentication)
 
 app.use("/api/users" , userRouter)
 app.use("/api/products" ,productRouter )
+app.use("/api/orders" , orderRouter)
  
 
 
