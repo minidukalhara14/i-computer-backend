@@ -89,6 +89,16 @@ export async function loginUser(req, res) {
     }
 }
 
+export async function getUserData(req, res) {
+    if(req.user == null){
+        res.status(401).json({
+            message : "Unauthorized"
+        })
+    }else{
+        res.json(req.user)
+    }
+}
+
 export default function isAdmin(req ){
     if(req.user == null){
         return false
