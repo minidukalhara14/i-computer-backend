@@ -2,6 +2,8 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv";
+import axios from "axios";
+import { response } from "express";
 
 dotenv.config();
 
@@ -174,10 +176,91 @@ export async function changePassword(req,res){
     }
 }
 
+export async function googleLogin(req, res) {
+
+    const accessToken = req.body.token
+
+    //google validate
+    try{
+        const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo",{
+            headers : {
+                Authorization : "Bearer " + accessToken
+        }
+    })
+        console.log(response.data)
+        const googleUserData = response.data
+        
+        const user = await User.findOne(
+            { email : googleUserData.email }
+        )
+
+        if(user == null){
+            const newUser = new User({
+                email : response.data.email,
+                firstName : response.data.given_name,
+                lastName : response.data.family_name,
+                password : "google-login",
+                isEmailVerified : true,
+                image : response.data.picture
+            })
+            await newUser.save()
+
+            //token generate
+
+            
+            const token = jwt.sign(
+                {
+                    email : response.data.email,
+                    firstName : response.data.given_name,
+                    lastName : response.data.family_name,
+                    isAdmin : false,
+                    isBlocked : false,
+                    isEmailVerified : true,
+                    image : response.data.picture
+                },
+                process.env.JWT_SECRET,
+                { expiresIn : "48h" }
+            )
+
+            res.json({
+                token : token,
+                isAdmin : false
+            })
+        
+        }else{
+            const token = jwt.sign(
+                {
+                    email : user.email,
+                    firstName : user.firstName,
+                    lastName : user.lastName,
+                    isAdmin : user.isAdmin,
+                    isBlocked : user.isBlocked,
+                    isEmailVerified : user.isEmailVerified,
+                    image : user.image
+                },
+                process.env.JWT_SECRET,
+                { expiresIn : "48h" }
+            )
+            res.json({
+                token : token,
+                isAdmin : user.isAdmin
+            })
+        }
+       
+
+    }catch(error){
+        res.status(401).json({
+            message : "Google authentication failed"
+        })
+    }
+
+    
+
+}
 
 export default function isAdmin(req ){
-    if(req.user == null){
-        return false
+    if(req.user == null){  
+        return  
     }
     if(req.user.isAdmin){
         return true
